@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title><%= title %></title>
+		<link rel="stylesheet" type="text/css" href="/stylesheets/bootstrap.css">
+		<link rel='stylesheet' href='/stylesheets/style.css' />
+	</head>
+	<body>
+	  	<ul class="nav nav-pills">
+		    <li role="presentation" class="active"><a href="／">首页</a></li>
+		    <% if(!user) { %>
+			    <li role="presentation"><a href="/login">登录</a></li>
+			    <li role="presentation"><a href="/reg">注册</a></li>
+		    <%} else { %>
+		    	<li role="presentation"><a href="/logout">退出</a></li>
+		    <% } %>
+		</ul>
+		<% if (success) { %>
+        	<div class="alert alert-success">
+	        	<%= success %>
+	        </div>
+    	<% } %>
+    	<% if (error) { %>
+        	<div class="alert alert-error">
+        		<%= error %>
+    		</div> 
+    	<% } %>
+	    <div class="container">
+	    <% if(!user) {%>
+	    	<div class="hero-unit">
+	    		<h1>欢迎来到my blog</h1>
+	    		<p>my blog 是一个基于node.js的微博系统</p>
+	    		<p>
+	    			<a class="btn btn-primary" href="/login">登录</a>
+	    			<a class="btn" href="/reg">立即注册</a>
+
+	    		</p>
+	    	</div>
+	    <% } else {%>
+			<form method="post" action="/post" class="well form-inline center" style="text-align: center;">
+		    	<input type="text" name="post" class='span8'>
+		    	<button type="submit" class="btn btn-success"><i class="icon-comment icon-white"></i>发言</button>
+		    </form>
+	    <% } %>
+	    <% posts.forEach(function(post, index){
+    		if(index %3 == 0) { %>
+				<div class="row">
+			<% } %>
+					<div class="col-md-4">
+						<h2><a href="/u/<%= post.user %>"><%=post.user %></a>说</h2>	
+						<p><small><%=post.time%></small></p>
+						<p><%=post.post %></p>		
+					</div>
+			<% if(index %3 == 2) { %>		
+				</div> <!-- row end-->
+    		<% } %>
+    	<% }) %>
+		<% if(posts.length %3 != 0) { %>		
+			</div> <!-- row end-->
+		<% } %>	
+	    </div>
+    </body>
+  <script src="http://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+  <script type="text/javascript" src="/javascripts/bootstrap.js"></script>
+
+</html>
