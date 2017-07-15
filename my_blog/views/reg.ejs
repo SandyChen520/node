@@ -5,57 +5,57 @@
 		<link rel="stylesheet" type="text/css" href="/stylesheets/bootstrap.css">
 		<link rel='stylesheet' href='/stylesheets/style.css' />
 	</head>
-	<body>
-	  	<ul class="nav nav-pills">
-		    <li role="presentation"><a href="／">首页</a></li>
-		    <% if(!user) { %>
-			    <li role="presentation"><a href="/login">登录</a></li>
-			    <li role="presentation"><a href="/reg">注册</a></li>
-		    <%} else { %>
-		    	<li role="presentation"><a href="/login">退出</a></li>
-		    <% } %>
-		</ul>
-		<% if (success) { %>
-        	<div class="alert alert-success">
-	        	<%= success %>
-	        </div>
-    	<% } %>
-    	<% if (error) { %>
-        	<div class="alert alert-danger">
-        		<%= error %>
-    		</div> 
-    	<% } %>
-	    <div class="container">
-	    	<form class="form-horizontal" method="post">
-	    		<fieldset>
-	    			<legend>用户注册</legend>
-	    			<div class="control-group">
-	    				<label class="control-label" for="username">用户名</label>
-	    				<div class="controls">
-	    					<input type="text" class="input-xlarge" id="username" name="username">
-	    					<p class="help-block">你的账户名称，用于登录和显示</p>
-	    				</div>
-	    			</div>
-	    			<div class="control-group">
-	    				<label class="control-label" for="password">密码</label>
-	    				<div class="controls">
-	    					<input type="password" class="input-xlarge" id="password" name="password">
-	    				</div>
-	    			</div>
-	    			<div class="control-group">
-	    				<label class="control-label" for="password-repeat">再次输入密码</label>
-	    				<div class="controls">
-	    					<input type="password" class="input-xlarge" id="password-repeat" name="password-repeat">
-	    				</div>
-	    			</div>
-	    			<div class="form-actions">
-	    				<button type="submit" class="btn btn-primary">注册</button>
-	    			</div>
-	    		</fieldset>
-	    	</form>
+	<body  class="mix-bg">
+	  	<div class="container-fluid">
+	  		<% include header%>
+			<% if (success) { %>
+	        	<div class="alert alert-success">
+		        	<%= success %>
+		        </div>
+	    	<% } %>
+	    	<% if (error) { %>
+	        	<div class="alert alert-danger">
+	        		<%= error %>
+	    		</div> 
+	    	<% } %>
+	    	<div class="row mt100 text-center">
+	    		<div class="col-md-4 col-md-offset-1"><h2>个人用户注册</h2></div>
+	    	</div>
+	    	<form class="form-horizontal mt30" method="post">
+			    <div class="form-group">
+				    <label for="username" class="col-md-offset-1 col-md-1 control-label">用户名</label>
+				    <div class="col-md-3">
+				        <input type="text" class="form-control" id="username" name="username">
+				    </div>
+				    <div class="col-md-3">你的账户名称，用于登录和显示</div>
+			    </div>
+			    <div class="form-group">
+				    <label for="password" class="col-md-offset-1 col-md-1 control-label">密码</label>
+				    <div class="col-md-3">
+				        <input type="password" class="form-control" id="password" name="password">
+				    </div>
+			    </div>
+			    <div class="form-group">
+				    <label for="password-repeat" class="col-md-offset-1 col-md-1 control-label">再次输入密码</label>
+				    <div class="col-md-3">
+				        <input type="password" class="form-control" id="password-repeat" name="password-repeat">
+				    </div>
+			    </div>
+			    <div class="form-group">
+				    <div class="col-md-offset-2 col-md-3 text-center">
+				        <button type="submit" class="btn btn-primary btn-lg btn-block">注册</button>
+				    </div>
+			    </div>
+			</form>
 	    </div>
     </body>
-  <script src="http://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
-  <script type="text/javascript" src="/javascripts/bootstrap.js"></script>
-
+<script src="http://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript" src="/javascripts/bootstrap.js"></script>
+<script type="text/javascript" charset="utf-8">
+        window.onload = function () {
+            setTimeout(function(){
+            	$(".alert").hide();
+            },1000)
+        }
+    </script>
 </html>

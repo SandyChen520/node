@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title><%= title %></title>
+    <link rel="stylesheet" type="text/css" href="/stylesheets/bootstrap.css">
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<body class="mix-bg">
+<div class="container-fluid">
+    <div class="row mt66">
+        <div class="col-md-2 text-center">
+            <ul class="nav nav-pills nav-stacked travel_nav">
+                <li role="presentation"><a href="/travel">旅游时光轴</a></li>
+                <li role="presentation"><a href="#">新增</a></li>
+                <li role="presentation" class="active"><a href="/photowall">照片墙</a></li>
+            </ul>
+        </div>
+        <div class="col-md-10">
+            <div class="row img_btn">
+                <div class="col-md-1"><button type="button" class="btn btn-info"  data-toggle="modal" data-target="#exampleModal">修改</button></div>
+                <div class="col-md-1"><button type="button" class="btn btn-info dele-btn">删除</button></div>
+            </div>
+            <div class="row">
+                <% if(!showwall) { %>
+                    <div class="img_txt">图片还需上传1张才能构成照片墙，请继续上传图片</div>
+                    <div class="img_upload">
+                        <% include imgupload%>
+                    </div>
+                <%} else { %>
+                    <ul id="img_wrap">
+                    <% for(var i=0; i < lists.length;i++){ %>
+
+                        <% if(lists[i]) { %>       
+                            <li><div class="box" style="background-image: url(/upload/<%= lists[i] %>);"></div></li>
+                        <% } else {%>
+                            <li data-toggle="modal" data-target="#exampleModal"><div class="box c00"  style="background: url(/images/upload.png) no-repeat center;">上传图片</div></li>
+                        <% } %>
+                    <% } %>
+
+                    </ul>  
+                <% } %>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="exampleModalLabel">修改图片</h4>
+                        
+                    </div>
+                    <div class="modal-body">
+                        <div class="mauto">
+                            <% include imgupload%>                        
+                        </div>
+                        
+                    </div>
+                </div>
+           </div>
+        </div>
+<script src="http://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript" src="/javascripts/bootstrap.js"></script>
+<script type="text/javascript" src="/javascripts/imgupload.js"></script>
+<script>
+    var currentImg = "no";
+    $('#exampleModal').on('hide.bs.modal', function () {
+      $(".lookimg_delBtn").click();
+    });
+    $(function () {
+        var collums = 5;//列
+        var rows = 5;//行
+        var wrap = $('#img_wrap');
+        var w = wrap.width() / rows;
+        var h = wrap.height() / collums;
+        var change = true;
+        var imgList = [];
+        for (var r = 0; r < rows; r++) {
+            // var t1 = r;
+            (function(t1){
+                for (var c = 0; c < collums; c++) {
+                    (function(t){
+
+                        var tt = 5*t1+t;
+                        wrap.find('li').eq(tt).css({
+                                'width': w + 'px',
+                                'height': h + 'px',
+                                'left': w * c + 'px',
+                                'top': h * r + 'px',
+                                'transform': 'scale(0.9) rotate(' + (Math.random() * 40 - 20) + 'deg) ' +
+                                'translateX(' + (30*c-60) + 'px)' +
+                                'translateY(' + (30*r-60) + 'px)'
+                            })
+                            .find('.box')
+                            .css({
+                                // 'background-image': 'url(upload/' + (r * collums + c) + '.jpg)',
+                                'transform': 'scale(0.9)'
+                            })
+                    })(c);
+                            // .end()
+                            // .appendTo(wrap)
+                }
+            })(r)
+        }
+        //获取路径中的图片名称
+        function getImgName(str){
+            if(str !== "none" && str){
+                var strarr = str.split("upload/");
+                var strarr1 = strarr[1].split('")');
+                return strarr1[0];
+            }
+            
+            
+        };
+        wrap.find('li').on('click', function () {
+            var aa = $(this).attr('data-toggle');
+            if(aa !== "modal"){
+                if (change == true) {
+                    var bgImg = $(this).find('div').css('background-image');
+                    currentImg = getImgName(bgImg);
+                    var bgLeft = 0;
+                    var bgTop = 0;
+                    $('#img_wrap li').each(function (index) {
+                        var $this=$(this);
+                        $(this).delay(40*index).animate({"opacity":0},200, function () {
+                            $this.css({
+                                'transform': ' rotate(0deg) ' +
+                                'translateX(0)' +
+                                'translateY(0)'
+                            });
+                            var imgarr = $this.find('div').css('background-image');
+                            imgList.push(imgarr);
+                            $this.find('div').css({
+                                'background-image': bgImg,
+                                'background-size': 'auto',
+                                'backgroundPositionX': -bgLeft,
+                                'backgroundPositionY': -bgTop,
+                                'transform': 'scale(1)'
+                            });
+                            bgLeft += 196;
+                            if (bgLeft >= 980) {
+                                bgTop += 100;
+                                bgLeft = 0;
+                            }
+                            $this.animate({"opacity":1},300);
+                        })
+
+
+
+
+                    });
+                    $('.img_btn').show();
+                    change = false;
+
+                } else if (change == false) {
+                    currentImg = "no";
+                    $('#img_wrap li').each(function (index) {
+                        var c=index %collums;
+                        var r=parseInt(index/collums);
+                        var $this=$(this);
+                        $(this).delay(40*index).animate({"opacity":0},200, function () {
+                            $this.css({
+                                'transform': 'rotate(' + (Math.random() * 40 - 20) + 'deg)' +
+                                'translateX(' + (30*c-60) + 'px)' +
+                                'translateY(' + (30*r-60) + 'px)'
+                            });
+                            $this.find('div').css({
+                                'background-image': imgList[index],
+                                'background-size': 'cover',
+                                'transform': 'scale(0.9)'
+                            });
+                            $this.animate({"opacity":1},200);
+                        })
+
+                    });
+                    $('.img_btn').hide();
+                    change = true;
+                }
+            } 
+
+        })
+        $(".dele-btn").on("click", function(){
+            currentimg = '{"imgName":"'+currentImg+'"}'
+            var result = eval("("+currentimg+")");
+            $.ajax({
+                type: "get",
+                url: "/deleteImg",
+                data: result,//图片base64编码，图片格式（当前仅支持jpg,png,jpeg三种），图片对象索引
+                dataType: "json",
+                success: function (data) {
+                    if (data.success) {
+                        window.location.href = "/photowall"
+                        //图片上传成功回调
+                       
+                    }
+                    else {//图片未上传成功回调
+                    
+                    }
+                },
+                error: function (err) {
+                    //服务器连接失败报错处理
+                    alert("error");
+                    //alert(err.responseText);
+                },
+                beforeSend: function () {
+
+                }
+            });
+        })
+    })
+</script>
+</body>
+</html>

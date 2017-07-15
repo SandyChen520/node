@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title><%= title %></title>
+		<link rel="stylesheet" type="text/css" href="/stylesheets/bootstrap.css">
+		<link rel='stylesheet' href='/stylesheets/style.css' />
+	</head>
+	<body  class="mix-bg">
+	  	<div class="container-fluid">
+	  		<% include header%>
+			<% if (success) { %>
+	        	<div class="alert alert-success">
+		        	<%= success %>
+		        </div>
+	    	<% } %>
+	    	<% if (error) { %>
+	        	<div class="alert alert-danger">
+	        		<%= error %>
+	    		</div> 
+	    	<% } %>
+	    	<div class="row mt66">
+	    		<div class="col-md-2 text-center">
+	    			<ul class="nav nav-pills nav-stacked travel_nav">
+					    <li role="presentation" class="active"><a href="#">旅游时光轴</a></li>
+					    <li role="presentation"><a href="#">新增</a></li>
+					    <li role="presentation"><a href="/photowall">照片墙</a></li>
+					</ul>
+	    		</div>
+	    		<div class="col-md-8"></div>
+	    	</div>
+    		
+		</div>
+
+	    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+		    <div class="modal-dialog" role="document">
+			    <div class="modal-content">
+				    <div class="modal-header">
+				        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				        <h4 class="modal-title" id="exampleModalLabel">用户登录</h4>
+				    </div>
+				    <div class="modal-body">
+				    	<form class="form-horizontal" method="post" action="/login">
+				    		<fieldset>
+				    			<div class="control-group">
+				    				<label class="control-label" for="username">用户名</label>
+				    				<div class="controls">
+				    					<input type="text" class="input-xlarge" id="username" name="username">
+				    					<p class="help-block">你的账户名称，用于登录和显示</p>
+				    				</div>
+				    			</div>
+				    			<div class="control-group">
+				    				<label class="control-label" for="password">密码</label>
+				    				<div class="controls">
+				    					<input type="password" class="input-xlarge" id="password" name="password">
+				    				</div>
+				    			</div>
+				    			<div class="form-actions">
+				    				<button type="submit" class="btn btn-primary">登录</button>
+				    			</div>
+				    		</fieldset>
+				    	</form>
+				    </div>
+			    </div>
+		   </div>
+		</div>
+    </body>
+    <script src="http://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="/javascripts/bootstrap.js"></script>
+	<script type="text/javascript" src="/javascripts/imgupload.js"></script>
+	<script type="text/javascript" charset="utf-8">
+        window.onload = function () {
+            setTimeout(function(){
+            	$(".alert").hide();
+            },1000)
+        }
+    </script>
+</html>

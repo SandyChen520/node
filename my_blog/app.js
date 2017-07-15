@@ -33,12 +33,10 @@ app.use(session({
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-
 // app.use('/users', users);
 app.use(flash());
 app.use(function(req,res,next){
   res.locals.user=req.session.user;
-  console.log(res.locals.user);
   var err = req.flash('error');
   var success = req.flash('success');
 

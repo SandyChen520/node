@@ -1,4 +1,6 @@
 var mongodb = require('./db');
+var logger = require("./../logs/logHelper").helper;  
+
 function User(user){
 	this.name = user.name;
 	this.password = user.password;
@@ -46,6 +48,8 @@ User.get = function get(username, callback){
 				mongodb.close();
 				if(doc){
 					//封装文档为User对象
+		logger.writeInfo(doc);
+					
 					var user = new User(doc);
 					callback(err, user);
 				}else{
