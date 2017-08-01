@@ -2,9 +2,10 @@
 	<div class="col-md-6 text-center col-md-offset-1"> </div>
 	<div class="col-md-1"><a href="/" class="<%= act[0] %>"><span class="glyphicon glyphicon-home"></span> 首页</a></div>
 	<div class="col-md-1"><a href="/travel" class="<%= act[1] %>"><span class="glyphicon glyphicon-plane"></span> 图文</a></div>
+	<div class="col-md-1"><a href="/travel" class="<%= act[2] %>"><span class="glyphicon glyphicon-plane"></span> blog</a></div>
 	<% if(!user) { %>
-	    <div class="col-md-1"><a href="/login" class="<%= act[2] %>"><span class="glyphicon glyphicon-log-in"></span> 登录</a></div>
-	    <div class="col-md-1"><a href="/reg" class="<%= act[3] %>"><span class="glyphicon glyphicon-flash"></span> 注册</a></div>
+	    <div class="col-md-1"><a href="/login" class="<%= act[3] %>"><span class="glyphicon glyphicon-log-in"></span> 登录</a></div>
+	    <div class="col-md-1"><a href="/reg" class="<%= act[4] %>"><span class="glyphicon glyphicon-flash"></span> 注册</a></div>
 	<%} else { %>
 		<div class="col-md-1"><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> 退出</a></div>
 	<% } %>

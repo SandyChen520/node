@@ -17,6 +17,7 @@ $("#div_imgfile").click(function () {
         _CRE_FILE.setAttribute("class", "imgfile");
         _CRE_FILE.setAttribute("accept", ".png,.jpg,.jpeg");
         _CRE_FILE.setAttribute("num", UP_IMGCOUNT);//记录此对象对应的编号
+        _CRE_FILE.setAttribute("name", "iptfile"+UP_IMGCOUNT);//记录此对象对应的编号
         $("#div_imgfile").after(_CRE_FILE);
     }
     else { //否则获取最后未使用对象

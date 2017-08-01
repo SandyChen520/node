@@ -7,6 +7,17 @@ body,a {
 .c00{
     color: #000;
 }
+.bff{
+    background: #fff;
+    color: #333;
+}
+.h60{
+    height: 60px;
+    line-height: 60px;
+}
+span:focus{
+    outline: none;
+}
 /*公共背景色*/
 .bg1{
     background: #e8e3da;
@@ -49,10 +60,15 @@ ul {
     margin-top:66px;
     width:100%;
     height:700px;
-    overflow: hidden;
 }
 .mt30{
     margin-top:30px;
+}
+.mb30{
+    margin-bottom:30px;
+}
+.mb10{
+    margin-bottom:10px;
 }
 .mt10{
     margin-top:10px;
@@ -64,6 +80,22 @@ ul {
 .mauto{
     margin:0 auto;
 }
+.scoll_wai{
+    width:100%;
+    height:700px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.scoll_wai1{
+    height:700px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.scroll_con{
+    width:104%;
+    height:100%;
+    overflow-x: hidden;
+}
 .index_abslot{
     position: absolute;
     left:0;
@@ -72,6 +104,9 @@ ul {
 }
 .travel_nav{
     margin-top:50px;
+}
+.travel_nav1{
+    margin-top:86px;
 }
 #img_wrap *{
     margin:0;
@@ -213,3 +248,29 @@ input[type='file'].imgfile {
     margin-top: 30px;
 }
 /*图片上传样式end*/
+
+/*图片详情*/
+.t_imgs{
+    width:100%;
+    margin: 10px 0;
+}
+.t_imgs img{
+    display: inline-block;
+    width:49%;
+}
+.t_ps{
+    padding: 5px 10px;
+}
+.t_con_header{
+    position: relative;
+    left:0;
+    top:0;
+    height:60px;
+    line-height: 60px;
+    font-size:16px;
+}
+.t_con_header .dropdown{
+    position: absolute;
+    right:100px;
+    top:0;
+}

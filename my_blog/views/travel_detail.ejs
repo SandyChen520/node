@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title><%= title %></title>
+    <link rel="stylesheet" type="text/css" href="/stylesheets/bootstrap.css">
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<body class="mix-bg">
+<div class="container-fluid">
+        <div class="index_abslot">
+                    <% if (success) { %>
+                        <div class="alert alert-success">
+                            <%= success %>
+                        </div>
+                    <% } %>
+                    <% if (error) { %>
+                        <div class="alert alert-error">
+                            <%= error %>
+                        </div> 
+                    <% } %>
+        </div>
+    <div class="row mt30">
+        <div class="col-md-2 text-center">
+            <ul class="nav nav-pills nav-stacked travel_nav1">
+                <li role="presentation" class="active"><a href="/travel">旅游时光轴</a></li>
+                <li role="presentation" data-toggle="modal" data-target="#exampleModal"><a href="javascript:void(0)">新增</a></li>
+                <li role="presentation"><a href="/photowall">照片墙</a></li>
+            </ul>
+        </div>
+        <div class="scoll_wai1 col-md-10">
+            <div class="scoll_con">
+                <% posts.forEach(function(post, index){ %>
+                    <div class="mb30">
+                        <div class="t_con_header">
+                            <%=post.title %>
+                            <div class="dropdown">
+                                <button id="dLabel" type="button" class="btn btn-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">管理
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dLabel">
+                                    <li><a href="javascript:void(0)">修改</a></li>
+                                    <li><a href="javascript:void(0)" class="del_info" data-id = "<%=post.id %>">删除</a></li>
+                              </ul>
+                            </div>
+                        </div>
+                        <div class="t_imgs text-center">
+                            <% if(post.imgpath){%>
+                                <img src="<%=post.imgpath %>">
+                            <% } %>
+                        </div>
+                        <p class="t_ps"><%=post.con %></p>
+                        <p class="t_ps text-right"><%=post.time %>发布</p>
+                    </div>
+                <% }) %>  
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="exampleModalLabel">旅游时光轴</h4>
+                        
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" method="post" enctype="multipart/form-data">
+                          <div class="form-group">
+                            <label for="ipttit" class="col-md-2 control-label">标题</label>
+                            <div class="col-md-10">
+                              <input type="text" class="form-control" id="ipttit" name="ipttit" placeholder="标题">
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <label for="ipttit" class="col-md-2 control-label">年份</label>
+                            <div class="col-md-10">
+                              <input type="text" class="form-control" id="iptyear" name="iptyear" placeholder="年份">
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <label for="iptfile" class="col-md-2 control-label">图片</label>
+                            <div class="col-md-3">
+                                <div id="div_imgfile">选择图片</div>
+                            </div>
+                            <div class="col-md-7">
+                                <div id="div_imglook" style="margin-top: 0;">
+                                    <div style="clear: both;"></div>
+                                </div>
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <label for="ipttextarea" class="col-sm-2 control-label">内容</label>
+                            <div class="col-sm-10">
+                                <textarea class="form-control" rows="3" id="ipttextarea" name="ipttextarea"></textarea>
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                              <button type="submit" class="btn btn-primary">确定</button>
+                            </div>
+                          </div>
+                        </form>
+                        
+                    </div>
+                </div>
+           </div>
+        </div>
+<script src="http://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript" src="/javascripts/bootstrap.js"></script>
+<script type="text/javascript" src="/javascripts/imgupload.js"></script>
+<script>
+window.onload = function () {
+    setTimeout(function(){
+        $(".alert").hide();
+    },1000);
+
+}
+$(".del_info").on("click", function(){
+    var id = $(this)[0].dataset["id"];
+    console.log(id);
+    $.ajax({
+        type: "GET",
+        url: "/travel_del_info",
+        data: {"id": id},
+        dataType: "json",
+        success: function (data) {
+            if (data.success) {
+                window.location.reload();
+            }
+            else {
+                
+            }
+        },
+        error: function (err) {
+            //服务器连接失败报错处理
+            alert("error");
+            //alert(err.responseText);
+        },
+        beforeSend: function () {
+            
+        }
+    });
+
+});
+</script>
+</body>
+</html>

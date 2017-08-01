@@ -8,10 +8,14 @@
  var crypto = require('crypto');
  var User = require('../models/user.js');
  var Post = require('../models/Post.js');
+ var Travel = require('../models/travel.js');
+ var Blog = require('../models/blog.js');
+
  var fs = require('fs');
  var Tools = require('../tools.js');
 var logger = require("./../logs/logHelper").helper;  
 var multer = require("../models/multer.js");
+var formidable = require("formidable"); 
 module.exports = function(app){
 	app.get('/',function(req, res){
 		logger.writeInfo("哈哈1开始记录日志");
@@ -19,8 +23,43 @@ module.exports = function(app){
 			if(err){
 				posts = [];
 			}
-			res.render('index', { title: '首页', posts: posts , act: ["a-active", "", "", ""]});
+			res.render('index', { title: '首页', posts: posts , act: ["a-active", "", "", "",""]});
 		});
+		
+	});
+	app.get('/blog',function(req, res){
+		Blog.get(req.session.user.name, null,function(err, posts){
+			var contentText;
+			if(err){
+				posts = [];
+			}
+			
+			res.render('blog', { title: '博客', posts: posts , act: ["", "", "a-active", "",""]});
+		});
+		
+	});
+	app.get('/blog_add',function(req, res){
+		res.render('blog_add', { title: '添加博客', act: ["", "", "a-active", "",""]});
+		
+	});
+	app.post('/blogadd',function(req, res){
+		logger.writeInfo("上传的博文参数为: ");
+		logger.writeInfo( req.body);
+		var path = 'public/uploadblog/'+ new Date().getTime() +'.txt';
+		fs.writeFile(path,req.body.con);
+		var blog = new Blog(req.session.user.name,req.body.tit, path);
+		blog.save(function(err){
+			if(err){
+				res.writeHead(200,{"Content-Type":'application/json','charset':'utf-8','Access-Control-Allow-Origin':'*','Access-Control-Allow-Methods':'PUT,POST,GET,DELETE,OPTIONS'});//可以解决跨域的请求
+			    res.write(resErrmessage('提交失败', null));
+			    res.end();
+			    return false;
+			}
+			res.writeHead(200,{"Content-Type":'application/json','charset':'utf-8','Access-Control-Allow-Origin':'*','Access-Control-Allow-Methods':'PUT,POST,GET,DELETE,OPTIONS'});//可以解决跨域的请求
+		    res.write(resDatamessage('提交成功', null));
+		    res.end();
+		});
+		// res.render('blog_add', { title: '添加博客', act: ["", "", "a-active", "",""]});
 		
 	});
 	app.get('/travel',function(req, res){
@@ -28,9 +67,95 @@ module.exports = function(app){
 			if(err){
 				posts = [];
 			}
-			res.render('travel', { title: '旅游', posts: posts , act: ["", "a-active", "", ""]});
+			res.render('travel', { title: '旅游', posts: posts , act: ["", "a-active", "", "",""]});
 		});
 		
+	});
+	app.get('/travel_detail',function(req, res){
+		logger.writeInfo("旅游时光轴参数user: " + req.session.user.name);
+
+		Travel.get(req.session.user.name, "2017", function(err, posts){
+			if(err){
+				posts = [];
+			}
+			logger.writeInfo("从数据库获取的旅游时光轴数据");
+			logger.writeInfo(posts);
+
+			res.render('travel_detail', { title: '旅游', posts: posts });
+		});
+		
+	});
+	app.post('/travel_detail',function(req, res){
+		logger.writeInfo("旅游时光轴上传数据");
+		var form = new formidable.IncomingForm(); 
+		form.uploadDir = 'public/tmp';  //文件上传 临时文件存放路径  
+		var post = {};
+		var filepath = ""; 
+
+		form.on('error', function(err) {
+		        logger.writeInfo(err); //各种错误
+		    }).on('field', function(field, value) { //POST 普通数据 不包含文件 field 表单name value 表单value 
+		        if (form.type == 'multipart') {  //有文件上传时 enctype="multipart/form-data" 
+		            if (field in post) {
+		                post[field].push(value);
+		                return;
+		            }
+		        }
+		        post[field] = value;
+		    }).on('file', function(field, file) { //上传文件
+		        if(file.type === "image/png"){
+		        	filepath = "/uploadimg/" + new Date().getTime() +".png";
+
+		        }else if(file.type === "image/jpeg"){
+		        	filepath = "/uploadimg/" + new Date().getTime() +".jpg";
+
+		        }
+	        	fs.rename(file.path, "public" + filepath);
+
+		        logger.writeInfo(file);
+
+		    }).on('end', function() {
+		        logger.writeInfo(post);
+		        logger.writeInfo("图片路径为： "+ filepath);
+		        var currentUser = req.session.user;
+		        var travel = new Travel(currentUser.name, post.ipttit, filepath, post.ipttextarea, post.iptyear);
+				travel.save(function(err){
+					if(err){
+						req.flash('error', err);
+						return res.redirect('/');
+					}
+					req.flash('success', '添加成功');
+					res.redirect('/travel_detail');
+				});
+		    });
+		form.parse(req); //解析request对象
+        
+		
+	});
+	app.get('/travel_del_info',function(req,res){
+		var id = req.query.id;
+		logger.writeInfo("旅游时光轴接受的要删除的id");
+		logger.writeInfo(id);
+		Travel.del(id, function(err, result){
+			if(err){
+				res.writeHead(200,{"Content-Type":'application/json','charset':'utf-8','Access-Control-Allow-Origin':'*','Access-Control-Allow-Methods':'PUT,POST,GET,DELETE,OPTIONS'});//可以解决跨域的请求
+			    res.write(resErrmessage('删除失败', null));
+			    res.end();
+			    return false;
+			}
+			fs.unlink('public'+result, function(err) {
+			   if (err) {
+			       return logger.writeErr(err);
+			   }
+			   logger.writeInfo("旅游时光轴接受的要删除的图片路径为：");
+				logger.writeInfo(result);
+				res.writeHead(200,{"Content-Type":'application/json','charset':'utf-8','Access-Control-Allow-Origin':'*','Access-Control-Allow-Methods':'PUT,POST,GET,DELETE,OPTIONS'});//可以解决跨域的请求
+			    res.write(resDatamessage('删除成功', null));
+			    res.end();
+			});
+			
+
+		});
 	});
 	app.get('/photowall',function(req, res){
 		var a = Tools.getFile('public/upload/');
@@ -72,7 +197,7 @@ module.exports = function(app){
 			}
 			req.flash('success', '发表成功');
 			res.redirect('/u/'+currentUser.name);
-		})
+		});
 	});
 
 	// pdf文件上传
@@ -120,7 +245,7 @@ module.exports = function(app){
             }else{
                logger.writeInfo('写入成功！');
             }
-        })
+        });
         
 		res.writeHead(200,{"Content-Type":'application/json','charset':'utf-8','Access-Control-Allow-Origin':'*','Access-Control-Allow-Methods':'PUT,POST,GET,DELETE,OPTIONS'});//可以解决跨域的请求
 		  //response.writeHead(200,{"Content-Type":'text/plain',            'Access-Control-Allow-Origin':'*','Access-Control-Allow-Methods':'PUT,POST,GET,DELETE,OPTIONS'});
@@ -151,7 +276,7 @@ module.exports = function(app){
 	})
 	app.get('/reg', checkNotLogin);
 	app.get('/reg', function(req, res){
-		res.render('reg', { title: '用户注册' , act: ["", "", "", "a-active"]});
+		res.render('reg', { title: '用户注册' , act: ["", "", "", "","a-active"]});
 	});
 	app.post('/reg', checkNotLogin);
 	app.post('/reg', function(req, res){
@@ -189,7 +314,7 @@ module.exports = function(app){
 	});
 	app.get('/login', checkNotLogin);
 	app.get('/login', function(req, res){
-		res.render('login', {title: '用户登录', act: ["", "", "a-active", ""]})
+		res.render('login', {title: '用户登录', act: ["", "", "", "a-active",""]})
 	});
 	app.post('/login', checkNotLogin);
 	app.post('/login', function(req, res){

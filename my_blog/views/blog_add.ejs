@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title><%= title %></title>
+		<link rel="stylesheet" type="text/css" href="/stylesheets/bootstrap.css">
+		<link rel='stylesheet' href='/stylesheets/style.css' />
+	</head>
+	<body class="mix-bg" style="height:100%">
+	    <div class="container-fluid">
+		<% include header%>
+		<div class="index_abslot">
+			<% if (success) { %>
+	        	<div class="alert alert-success">
+		        	<%= success %>
+		        </div>
+	    	<% } %>
+	    	<% if (error) { %>
+	        	<div class="alert alert-error">
+	        		<%= error %>
+	    		</div> 
+	    	<% } %>
+		</div>
+	    <% if(!user) {%>
+	    	<div class="row mt100 text-center">
+	    		<h1>欢迎来到my blog</h1>
+	    		<p>my blog 是一个基于node.js的系统</p>
+	    		<p>查看更多信息，请点击以下按钮：</p>
+	    		<p>
+	    			<a class="btn btn-primary" href="/login">登录</a>
+	    			<a class="btn" href="/reg">立即注册</a>
+
+	    		</p>
+	    	</div>
+	    <% } else {%>
+			<!-- <form method="post" action="/post" class="well form-inline center" style="text-align: center;">
+		    	<input type="text" name="post" class='span8'>
+		    	<button type="submit" class="btn btn-success"><i class="icon-comment icon-white"></i>发言</button>
+		    </form>
+ -->		<div class="row mt66" >
+				<div class="col-md-2 text-center">
+					<ul class="nav nav-pills nav-stacked travel_nav">
+		                <li role="presentation" class="active"><a href="javascript:void(0)">新增</a></li>
+		                <li role="presentation"  data-toggle="modal" data-target="#exampleModal"><a href="javascript:void(0)">修改</a></li>
+		            </ul>
+				</div>
+				<div class="col-md-9">
+					<input type="text" id="titinpt" class="form-control mb10 mt10" name="" placeholder="标题">
+					<div id="self_info" name="self_info">
+		    			<div id="pdf" style="height: 350px;width: 100%;" />
+					</div>
+					<button type="button" class="btn btn-primary" id="subbtn">提交</button>
+				</div>
+			</div>
+	    <% } %>
+
+	    </div>
+	    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+		    <div class="modal-dialog" role="document">
+			    <div class="modal-content">
+				    <div class="modal-header">
+				        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				        <h4 class="modal-title" id="exampleModalLabel">上传文件</h4>
+						
+				    </div>
+				    <div class="modal-body">
+				    	
+				    	<form class="form-horizontal" method="post" action="/fileUpload" enctype="multipart/form-data">
+				    		<fieldset>
+				    			<div class="control-group">
+				    				<div id="div_imgfile" class="mauto">选择文件</div>
+				    				<div class="file-flag text-center mt10"></div>
+				    				<input type="file" id="filename" name="filename" class="imgfile" accept="application/pdf">
+				    			</div>
+				    			<div class="form-actions text-center mt10">
+				    				<button type="submit" class="btn btn-primary">确定上传</button>
+				    			</div>
+				    		</fieldset>
+				    	</form>
+				    	
+				    </div>
+			    </div>
+		   </div>
+		</div>
+    </body>
+    <script src="http://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="/javascripts/bootstrap.js"></script>
+    <script type="text/javascript" src="http://unpkg.com/wangeditor/release/wangEditor.min.js"></script>
+	<script type="text/javascript">
+        window.onload = function () {
+        	var E = window.wangEditor;
+			var editor2 = new E('#pdf');
+			editor2.customConfig.uploadImgShowBase64 = true;   // 使用 base64 保存图片
+			editor2.create()
+            setTimeout(function(){
+            	$(".alert").hide();
+            },1000);
+            $("#subbtn").click(function(){
+            	var tit = $("#titinpt").val();
+            	var con = editor2.txt.html();
+            	var resu = {};
+            	resu.tit = tit;
+            	resu.con = con;
+            	// var res = '{"tit": '+tit+', "con": "'+con+'"}';
+            	// res = eval("("+res+")");
+	        	$.ajax({
+		            type: "POST",
+		            url: "/blogadd",
+		            data: resu,
+		            dataType: "json",
+		            success: function (data) {
+		                
+		            },
+		            error: function (err) {
+		                //服务器连接失败报错处理
+		                alert("error");
+		                //alert(err.responseText);
+		            },
+		            beforeSend: function () {
+		                
+		            }
+		        });
+        });
+        }
+
+        $("#div_imgfile").click(function () {
+        	
+		    return $(".imgfile").click();//打开对象选择框
+		});
+		$(".modal").delegate("#filename","change",function(){
+			if($(this).val().length > 0){
+				var a = $("#filename").val();
+        		$(".file-flag").html(a);
+			}
+		}); 
+    </script>
+</html>
